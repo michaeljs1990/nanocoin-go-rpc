@@ -1,7 +1,6 @@
 package nanocoinrpc
 
 import (
-	"encoding/json"
 	"errors"
 )
 
@@ -24,12 +23,7 @@ type AccountBalanceResponse struct {
 
 func (n *NanoService) AccountBalance(r AccountBalanceRequest) (*AccountBalanceResponse, error) {
 	r.Action = "account_balance"
-	byt, err := json.Marshal(r)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := n.client.NewRequest(byt)
+	req, err := n.client.NewRequest(r)
 	if err != nil {
 		return nil, err
 	}
@@ -63,12 +57,7 @@ type AccountBlockCountResponse struct {
 
 func (n *NanoService) AccountBlockCount(r AccountBlockCountRequest) (*AccountBlockCountResponse, error) {
 	r.Action = "account_block_count"
-	byt, err := json.Marshal(r)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := n.client.NewRequest(byt)
+	req, err := n.client.NewRequest(r)
 	if err != nil {
 		return nil, err
 	}
@@ -100,12 +89,7 @@ type AccountGetResponse struct {
 
 func (n *NanoService) AccountGet(r AccountGetRequest) (*AccountGetResponse, error) {
 	r.Action = "account_get"
-	byt, err := json.Marshal(r)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := n.client.NewRequest(byt)
+	req, err := n.client.NewRequest(r)
 	if err != nil {
 		return nil, err
 	}
@@ -152,12 +136,7 @@ type AccountHistoryResponse struct {
 
 func (n *NanoService) AccountHistory(r AccountHistoryRequest) (*AccountHistoryResponse, error) {
 	r.Action = "account_history"
-	byt, err := json.Marshal(r)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := n.client.NewRequest(byt)
+	req, err := n.client.NewRequest(r)
 	if err != nil {
 		return nil, err
 	}
@@ -208,17 +187,44 @@ type AccountInfoResponse struct {
 
 func (n *NanoService) AccountInfo(r AccountInfoRequest) (*AccountInfoResponse, error) {
 	r.Action = "account_info"
-	byt, err := json.Marshal(r)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := n.client.NewRequest(byt)
+	req, err := n.client.NewRequest(r)
 	if err != nil {
 		return nil, err
 	}
 
 	jsonResp := &AccountInfoResponse{}
+	_, err = n.client.Do(req, jsonResp)
+	if err != nil {
+		return nil, err
+	}
+
+	if jsonResp.Error != "" {
+		jsonErr := errors.New("Error from nano server: " + jsonResp.Error)
+		return jsonResp, jsonErr
+	}
+
+	return jsonResp, nil
+}
+
+type AccountKeyRequest struct {
+	Action  string `json:"action"`
+	Account string `json:"account"`
+}
+
+type AccountKeyResponse struct {
+	Key string `json:"key"`
+
+	Error string `json:"error"`
+}
+
+func (n *NanoService) AccountKey(r AccountKeyRequest) (*AccountKeyResponse, error) {
+	r.Action = "account_key"
+	req, err := n.client.NewRequest(r)
+	if err != nil {
+		return nil, err
+	}
+
+	jsonResp := &AccountKeyResponse{}
 	_, err = n.client.Do(req, jsonResp)
 	if err != nil {
 		return nil, err

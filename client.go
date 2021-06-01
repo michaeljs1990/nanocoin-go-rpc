@@ -38,9 +38,14 @@ func NewClient(baseurl string) (*Client, error) {
 	return c, nil
 }
 
-func (c *Client) NewRequest(data []byte) (*http.Request, error) {
+func (c *Client) NewRequest(v interface{}) (*http.Request, error) {
+	byt, err := json.Marshal(v)
+	if err != nil {
+		return nil, err
+	}
+
 	url := c.BaseURL.String()
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(byt))
 	if err != nil {
 		return nil, err
 	}

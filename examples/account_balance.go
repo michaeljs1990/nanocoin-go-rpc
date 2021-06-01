@@ -27,7 +27,7 @@ func main() {
 
 	historyReq := nanocoinrpc.AccountHistoryRequest{
 		Account: "nano_37ortkby6k68z8tkk8g63ndbp8wjbmofhn56oyxb4rm6s3x51pkpiwcnpgmq",
-		Count:   "1",
+		Count:   "10",
 	}
 
 	historyResp, err := nano.Nano.AccountHistory(historyReq)
@@ -37,4 +37,20 @@ func main() {
 	}
 
 	fmt.Printf("%+v\n", historyResp)
+
+	infoReq := nanocoinrpc.AccountInfoRequest{
+		Account:          "nano_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3",
+		Representative:   "true",
+		Weight:           "true",
+		Pending:          "true",
+		IncludeConfirmed: "true",
+	}
+
+	infoResp, err := nano.Nano.AccountInfo(infoReq)
+	if err != nil {
+		fmt.Println("infoResp", err)
+		return
+	}
+
+	fmt.Printf("%+v\n", infoResp)
 }
