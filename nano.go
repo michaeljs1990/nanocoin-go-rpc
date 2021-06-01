@@ -369,18 +369,30 @@ func (n *NanoService) AccountsFrontiers(r AccountsFrontiersRequest) (*AccountsFr
 	return jsonResp, nil
 }
 
+// https://docs.nano.org/commands/rpc-protocol/#accounts_pending is one of the worst API endpoints
+//  I have ever seen. It returns three different types for "block" depending on the request being called.
+// Whatever is done for this it won't be pretty or match the rest of the API.
+//
+// TODO: Figure out how I want to do this.
+
 type AccountsPendingRequest struct {
-	Action   string   `json:"action"`
-	Accounts []string `json:"accounts"`
+	Action               string   `json:"action"`
+	Accounts             []string `json:"accounts"`
+	IncludeOnlyConfirmed string   `json:"include_only_confirmed"`
+	Count                string   `json:"count"`
+	IncludeActive        string   `json:"include_active"`
+	Source               string   `json:"source"`
+	Threshold            string   `json:"threshold"`
+	Sorting              string   `json:"sorting"`
 }
 
 type AccountsPendingResponse struct {
-	Frontiers map[string]string `json:"frontiers"`
+	Blocks map[string]string `json:"blocks"`
 
 	Error string `json:"error"`
 }
 
-func (n *NanoService) AccountPending(r AccountsPendingRequest) (*AccountsPendingResponse, error) {
+func (n *NanoService) AccountsPending(r AccountsPendingRequest) (*AccountsPendingResponse, error) {
 	r.Action = "accounts_pending"
 	req, err := n.client.NewRequest(r)
 	if err != nil {
@@ -388,6 +400,134 @@ func (n *NanoService) AccountPending(r AccountsPendingRequest) (*AccountsPending
 	}
 
 	jsonResp := &AccountsPendingResponse{}
+	_, err = n.client.Do(req, jsonResp)
+	if err != nil {
+		return nil, err
+	}
+
+	if jsonResp.Error != "" {
+		jsonErr := errors.New("Error from nano server: " + jsonResp.Error)
+		return jsonResp, jsonErr
+	}
+
+	return jsonResp, nil
+}
+
+type AvailableSupplyRequest struct {
+	Action string `json:"action"`
+}
+
+type AvailableSupplyResponse struct {
+	Available string `json:"available"`
+
+	Error string `json:"error"`
+}
+
+func (n *NanoService) AvailableSupply(r AvailableSupplyRequest) (*AvailableSupplyResponse, error) {
+	r.Action = "available_supply"
+	req, err := n.client.NewRequest(r)
+	if err != nil {
+		return nil, err
+	}
+
+	jsonResp := &AvailableSupplyResponse{}
+	_, err = n.client.Do(req, jsonResp)
+	if err != nil {
+		return nil, err
+	}
+
+	if jsonResp.Error != "" {
+		jsonErr := errors.New("Error from nano server: " + jsonResp.Error)
+		return jsonResp, jsonErr
+	}
+
+	return jsonResp, nil
+}
+
+type BlockAccountRequest struct {
+	Action string `json:"action"`
+	Hash   string `json:"hash"`
+}
+
+type BlockAccountResponse struct {
+	Account string `json:"account"`
+
+	Error string `json:"error"`
+}
+
+func (n *NanoService) BlockAccount(r BlockAccountRequest) (*BlockAccountResponse, error) {
+	r.Action = "block_account"
+	req, err := n.client.NewRequest(r)
+	if err != nil {
+		return nil, err
+	}
+
+	jsonResp := &BlockAccountResponse{}
+	_, err = n.client.Do(req, jsonResp)
+	if err != nil {
+		return nil, err
+	}
+
+	if jsonResp.Error != "" {
+		jsonErr := errors.New("Error from nano server: " + jsonResp.Error)
+		return jsonResp, jsonErr
+	}
+
+	return jsonResp, nil
+}
+
+type BlockConfirmRequest struct {
+	Action string `json:"action"`
+	Hash   string `json:"hash"`
+}
+
+type BlockConfirmResponse struct {
+	Started string `json:"started"`
+
+	Error string `json:"error"`
+}
+
+func (n *NanoService) BlockConfirm(r BlockConfirmRequest) (*BlockConfirmResponse, error) {
+	r.Action = "block_confirm"
+	req, err := n.client.NewRequest(r)
+	if err != nil {
+		return nil, err
+	}
+
+	jsonResp := &BlockConfirmResponse{}
+	_, err = n.client.Do(req, jsonResp)
+	if err != nil {
+		return nil, err
+	}
+
+	if jsonResp.Error != "" {
+		jsonErr := errors.New("Error from nano server: " + jsonResp.Error)
+		return jsonResp, jsonErr
+	}
+
+	return jsonResp, nil
+}
+
+type BlockCountRequest struct {
+	Action string `json:"action"`
+}
+
+type BlockCountResponse struct {
+	Count     string `json:"count"`
+	Unchecked string `json:"unchecked"`
+	Cemented  string `json:"cemented"`
+
+	Error string `json:"error"`
+}
+
+func (n *NanoService) BlockCount(r BlockCountRequest) (*BlockCountResponse, error) {
+	r.Action = "block_count"
+	req, err := n.client.NewRequest(r)
+	if err != nil {
+		return nil, err
+	}
+
+	jsonResp := &BlockCountResponse{}
 	_, err = n.client.Do(req, jsonResp)
 	if err != nil {
 		return nil, err
