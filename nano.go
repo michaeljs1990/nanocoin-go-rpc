@@ -237,3 +237,166 @@ func (n *NanoService) AccountKey(r AccountKeyRequest) (*AccountKeyResponse, erro
 
 	return jsonResp, nil
 }
+
+type AccountRepresentativeRequest struct {
+	Action  string `json:"action"`
+	Account string `json:"account"`
+}
+
+type AccountRepresentativeResponse struct {
+	Representative string `json:"representative"`
+
+	Error string `json:"error"`
+}
+
+func (n *NanoService) AccountRepresentative(r AccountRepresentativeRequest) (*AccountRepresentativeResponse, error) {
+	r.Action = "account_representative"
+	req, err := n.client.NewRequest(r)
+	if err != nil {
+		return nil, err
+	}
+
+	jsonResp := &AccountRepresentativeResponse{}
+	_, err = n.client.Do(req, jsonResp)
+	if err != nil {
+		return nil, err
+	}
+
+	if jsonResp.Error != "" {
+		jsonErr := errors.New("Error from nano server: " + jsonResp.Error)
+		return jsonResp, jsonErr
+	}
+
+	return jsonResp, nil
+}
+
+type AccountWeightRequest struct {
+	Action  string `json:"action"`
+	Account string `json:"account"`
+}
+
+type AccountWeightResponse struct {
+	Representative string `json:"representative"`
+
+	Error string `json:"error"`
+}
+
+func (n *NanoService) AccountWeight(r AccountWeightRequest) (*AccountWeightResponse, error) {
+	r.Action = "account_weight"
+	req, err := n.client.NewRequest(r)
+	if err != nil {
+		return nil, err
+	}
+
+	jsonResp := &AccountWeightResponse{}
+	_, err = n.client.Do(req, jsonResp)
+	if err != nil {
+		return nil, err
+	}
+
+	if jsonResp.Error != "" {
+		jsonErr := errors.New("Error from nano server: " + jsonResp.Error)
+		return jsonResp, jsonErr
+	}
+
+	return jsonResp, nil
+}
+
+type AccountsBalancesRequest struct {
+	Action   string   `json:"action"`
+	Accounts []string `json:"accounts"`
+}
+
+type AccountsBalancesResponse struct {
+	Balances map[string]struct {
+		Balance string `json:"balance"`
+		Pending string `json:"pending"`
+	} `json:"balances"`
+
+	Error string `json:"error"`
+}
+
+func (n *NanoService) AccountsBalances(r AccountsBalancesRequest) (*AccountsBalancesResponse, error) {
+	r.Action = "accounts_balances"
+	req, err := n.client.NewRequest(r)
+	if err != nil {
+		return nil, err
+	}
+
+	jsonResp := &AccountsBalancesResponse{}
+	_, err = n.client.Do(req, jsonResp)
+	if err != nil {
+		return nil, err
+	}
+
+	if jsonResp.Error != "" {
+		jsonErr := errors.New("Error from nano server: " + jsonResp.Error)
+		return jsonResp, jsonErr
+	}
+
+	return jsonResp, nil
+}
+
+type AccountsFrontiersRequest struct {
+	Action   string   `json:"action"`
+	Accounts []string `json:"accounts"`
+}
+
+type AccountsFrontiersResponse struct {
+	Frontiers map[string]string `json:"frontiers"`
+
+	Error string `json:"error"`
+}
+
+func (n *NanoService) AccountsFrontiers(r AccountsFrontiersRequest) (*AccountsFrontiersResponse, error) {
+	r.Action = "accounts_frontiers"
+	req, err := n.client.NewRequest(r)
+	if err != nil {
+		return nil, err
+	}
+
+	jsonResp := &AccountsFrontiersResponse{}
+	_, err = n.client.Do(req, jsonResp)
+	if err != nil {
+		return nil, err
+	}
+
+	if jsonResp.Error != "" {
+		jsonErr := errors.New("Error from nano server: " + jsonResp.Error)
+		return jsonResp, jsonErr
+	}
+
+	return jsonResp, nil
+}
+
+type AccountsPendingRequest struct {
+	Action   string   `json:"action"`
+	Accounts []string `json:"accounts"`
+}
+
+type AccountsPendingResponse struct {
+	Frontiers map[string]string `json:"frontiers"`
+
+	Error string `json:"error"`
+}
+
+func (n *NanoService) AccountPending(r AccountsPendingRequest) (*AccountsPendingResponse, error) {
+	r.Action = "accounts_pending"
+	req, err := n.client.NewRequest(r)
+	if err != nil {
+		return nil, err
+	}
+
+	jsonResp := &AccountsPendingResponse{}
+	_, err = n.client.Do(req, jsonResp)
+	if err != nil {
+		return nil, err
+	}
+
+	if jsonResp.Error != "" {
+		jsonErr := errors.New("Error from nano server: " + jsonResp.Error)
+		return jsonResp, jsonErr
+	}
+
+	return jsonResp, nil
+}

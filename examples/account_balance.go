@@ -23,7 +23,7 @@ func main() {
 		return
 	}
 
-	fmt.Printf("%+v\n", resp)
+	fmt.Printf("%+v\n\n", resp)
 
 	historyReq := nanocoinrpc.AccountHistoryRequest{
 		Account: "nano_37ortkby6k68z8tkk8g63ndbp8wjbmofhn56oyxb4rm6s3x51pkpiwcnpgmq",
@@ -36,7 +36,7 @@ func main() {
 		return
 	}
 
-	fmt.Printf("%+v\n", historyResp)
+	fmt.Printf("%+v\n\n", historyResp)
 
 	infoReq := nanocoinrpc.AccountInfoRequest{
 		Account:          "nano_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3",
@@ -52,5 +52,18 @@ func main() {
 		return
 	}
 
-	fmt.Printf("%+v\n", infoResp)
+	fmt.Printf("%+v\n\n", infoResp)
+
+	balReq := nanocoinrpc.AccountsBalancesRequest{
+		Accounts: []string{"nano_37ortkby6k68z8tkk8g63ndbp8wjbmofhn56oyxb4rm6s3x51pkpiwcnpgmq"},
+	}
+
+	balResp, err := nano.Nano.AccountsBalances(balReq)
+	if err != nil {
+		fmt.Println("balResp", err)
+		return
+	}
+
+	fmt.Printf("%+v\n\n", balResp)
+
 }
