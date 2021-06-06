@@ -540,3 +540,60 @@ func (n *NanoService) BlockCount(r BlockCountRequest) (*BlockCountResponse, erro
 
 	return jsonResp, nil
 }
+
+type BlockCreateRequest struct {
+	Action         string `json:"action"`
+	JSONBlock      string `json:"json_block,omitempty"`
+	Type           string `json:"type"`
+	Balance        string `json:"balance"`
+	Key            string `json:"key"`
+	Representative string `json:"representative"`
+	Link           string `json:"link"`
+	Previous       string `json:"previous"`
+	Wallet         string `json:"wallet,omitempty"`
+	Account        string `json:"account,omitempty"`
+	Source         string `json:"source,omitempty"`
+	Destination    string `json:"destination,omitempty"`
+	Work           string `json:"work,omitempty"`
+	Version        string `json:"version,omitempty"`
+	Difficulty     string `json:"difficulty,omitempty"`
+}
+
+type BlockCreateResponse struct {
+	Hash       string `json:"hash"`
+	Difficulty string `json:"difficulty"`
+	Block      struct {
+		Type           string `json:"type"`
+		Account        string `json:"account"`
+		Previous       string `json:"previous"`
+		Representative string `json:"representative"`
+		Balance        string `json:"balance"`
+		Link           string `json:"link"`
+		LinkAsAccount  string `json:"link_as_account"`
+		Signature      string `json:"signature"`
+		Work           string `json:"work"`
+	} `json:"block"`
+
+	Error string `json:"error"`
+}
+
+func (n *NanoService) BlockCreate(r BlockCreateRequest) (*BlockCreateResponse, error) {
+	r.Action = "block_create"
+	req, err := n.client.NewRequest(r)
+	if err != nil {
+		return nil, err
+	}
+
+	jsonResp := &BlockCreateResponse{}
+	_, err = n.client.Do(req, jsonResp)
+	if err != nil {
+		return nil, err
+	}
+
+	if jsonResp.Error != "" {
+		jsonErr := errors.New("Error from nano server: " + jsonResp.Error)
+		return jsonResp, jsonErr
+	}
+
+	return jsonResp, nil
+}
